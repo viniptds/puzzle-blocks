@@ -58,10 +58,17 @@ button {
     
     border-radius: 30px;
     padding: 15px;
-    background-color: sienna;
     color: white;
 }
 
 button:hover {
     box-shadow: 0 0 1em #000;
+}
+
+#btnSolve {
+    background-color: rgb(33, 85, 9);
+}
+
+#btnMix {
+    background-color: sienna;
 }

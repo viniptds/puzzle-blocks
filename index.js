@@ -21,9 +21,8 @@ let grid = document.querySelector("#grid");
 let list = [];
 
 //inicia a aplicacao
-function init(random = false)
+function init(e)
 {
-
     //acoes disparadas
     button_mix.addEventListener("click", init);
     buttons_move.forEach((button) => {
@@ -31,13 +30,20 @@ function init(random = false)
     })
 
     setUserMove(0);
-    list = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-
-    if(random) {
-        // criar random
-        // list = shuffle(list);
-    } 
+    list = [1, 2, 3, 4, 5, 6, 7, 0, 8];
     
+    mixGrid();
+    fillGrid();
+
+    //calculo de passos
+
+}
+
+function mixGrid()
+{
+    // criar random
+    list = shuffle(list);
+
     fillGrid();
 }
 
@@ -62,8 +68,9 @@ function fillGrid()
 function handleClickBox(e)
 {
     let elem = e.target;
-    moveBox(elem);
-    validateGrid();
+
+    if(moveBox(elem))
+        validateGrid();
 }
 
 //movimenta box atraves da edicao de list
@@ -71,24 +78,26 @@ function moveBox(box) {
 
     let boxIndex = box.id.substr(3);
     let destinyBox = getFreeBox(box.id);
+    let moved = false;
 
     if(destinyBox){
         let destinyIndex = destinyBox.substr(3);
-       list[destinyIndex] = parseInt(box.innerHTML);
-       list[boxIndex] = 0;
+        list[destinyIndex] = parseInt(box.innerHTML);
+        list[boxIndex] = 0;
 
         fillGrid();
         setUserMove(++user_moves);
         console.log(list);
+        moved = true;
     }
+
+    return moved;
 }
 
 //verifica se chegou a resposta final
 function validateGrid() {
-    
     //gabarito - nao mexer
     let gabarito = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-
     let success = true;
 
     success = list.filter((val, index) => {
@@ -97,7 +106,6 @@ function validateGrid() {
         return val == parseInt(gabarito[index]);
     }).length == gabarito.length;
 
-    
     if(success)
         alert("Parabéns, você completou o puzzle após " + user_moves + " tentativas");
 }
@@ -133,6 +141,7 @@ function shuffle(array) {
 
 //atribui valor as movimentos do jogador
 function setUserMove(moves = 0) {
+    user_moves = moves;
     let tentativas = document.querySelector("#user_moves");
     tentativas.innerHTML = moves;
 }
@@ -144,4 +153,4 @@ let buttons_move = document.querySelectorAll(".box");
 
 
 //inicia toda aplicacao
-init();
+window.addEventListener("load", init);
