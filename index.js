@@ -1,15 +1,20 @@
 //movimentos disponiveis para cada box - nao mexer
-let moves = {
-    tb_0: ['tb_1', 'tb_3'],
-    tb_1: ['tb_0', 'tb_2', 'tb_4'],
-    tb_2: ['tb_1', 'tb_5'],
-    tb_3: ['tb_0', 'tb_4', 'tb_6'],
-    tb_4: ['tb_1', 'tb_3', 'tb_5', 'tb_7'],
-    tb_5: ['tb_4', 'tb_2', 'tb_8'],
-    tb_6: ['tb_7', 'tb_3'],
-    tb_7: ['tb_6', 'tb_4', 'tb_8'],
-    tb_8: ['tb_7', 'tb_5']
-};
+let moves =[
+    [1, 3],
+    [0, 2, 4],
+    [1, 5],
+    [0, 4, 6],
+    [1, 3, 5, 7],
+    [4, 2, 8],
+    [7, 3],
+    [6, 4, 8],
+    [7, 5]
+];
+
+//gabarito - nao mexer
+let gabarito = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+
+// console.log(moves);
 
 //contador de movimentos do user
 let user_moves = 0;
@@ -18,7 +23,7 @@ let user_moves = 0;
 let grid = document.querySelector("#grid");
 
 //lista de elementos
-let list = [];
+var list = [];
 
 //inicia a aplicacao
 function init(e)
@@ -29,14 +34,18 @@ function init(e)
         button.addEventListener("click", handleClickBox);
     })
 
+    // button_solve.addEventListener("click", CalculaPassos);
+
     setUserMove(0);
-    list = [1, 2, 3, 4, 5, 6, 7, 0, 8];
+    list = [1,6,2,4,0,3,7,5,8];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
+
+    if(e.type == 'click')
+        mixGrid();
+
+    fillGrid(list);
     
-    mixGrid();
-    fillGrid();
-
     //calculo de passos
-
+    // CalculaPassos();
 }
 
 function mixGrid()
@@ -44,11 +53,10 @@ function mixGrid()
     // criar random
     list = shuffle(list);
 
-    fillGrid();
 }
 
 //preenche a grid com a sequencia de elementos
-function fillGrid()
+function fillGrid(list = [])
 {
     [...grid.children].forEach(function(item, i) {
         if(list[i] > 0) {
@@ -67,25 +75,25 @@ function fillGrid()
 //clique na box para mexer
 function handleClickBox(e)
 {
-    let elem = e.target;
+    let elem = e.target.id;
+    let box = elem.substr(3);
 
-    if(moveBox(elem))
+    if(moveBox(box))
         validateGrid();
 }
 
 //movimenta box atraves da edicao de list
-function moveBox(box) {
+function moveBox(boxIndex) {
 
-    let boxIndex = box.id.substr(3);
-    let destinyBox = getFreeBox(box.id);
+    let box = document.querySelector("#tb_" + boxIndex);
+    let destinyIndex = getFreeBox(boxIndex);
     let moved = false;
 
-    if(destinyBox){
-        let destinyIndex = destinyBox.substr(3);
+    if(destinyIndex !== false){
         list[destinyIndex] = parseInt(box.innerHTML);
         list[boxIndex] = 0;
 
-        fillGrid();
+        fillGrid(list);
         setUserMove(++user_moves);
         console.log(list);
         moved = true;
@@ -96,8 +104,7 @@ function moveBox(box) {
 
 //verifica se chegou a resposta final
 function validateGrid() {
-    //gabarito - nao mexer
-    let gabarito = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+
     let success = true;
 
     success = list.filter((val, index) => {
@@ -113,8 +120,8 @@ function validateGrid() {
 //busca box vazia ao redor da box clicada
 function getFreeBox(box){
 
-    let ret = moves[box].filter((item) => {
-        let destiny = document.querySelector("#" + item);
+    let ret = moves[box].filter((item, index) => {
+        let destiny = document.querySelector("#tb_" + item);
         return destiny.innerHTML.length == 0;
     });
 
@@ -128,7 +135,6 @@ function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
     while (0 !== currentIndex) {
-
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
     
