@@ -12,6 +12,7 @@ body {
     height: 600px;
     margin: 0 auto;
     background-color: dimgray;
+    margin-bottom: 2em;
 }
 
 .box {
@@ -71,4 +72,8 @@ button:hover {
 
 #btnMix {
     background-color: sienna;
+}
+
+#report_end_match {
+    display: none;
 }

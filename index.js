@@ -19,106 +19,27 @@ let gabarito = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 //contador de movimentos do user
 let user_moves = 0;
 
-//grid layout
-let grid = document.querySelector("#grid");
+//algoritmo de busca
+let algoritmo_busca = "";
 
-//lista de elementos
-var list = [];
-
-//inicia a aplicacao
-function init(e)
-{
-    //acoes disparadas
-    button_mix.addEventListener("click", init);
-    buttons_move.forEach((button) => {
-        button.addEventListener("click", handleClickBox);
-    })
-
-    // button_solve.addEventListener("click", CalculaPassos);
-
-    setUserMove(0);
-    list = [1,6,2,4,0,3,7,5,8];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
-
-    if(e.type == 'click')
-        mixGrid();
-
-    let caminho = bestFirst(gabarito, list);
-
-    list = caminho[caminho.length - 1];
-
-    fillGrid(list);
-    
-    //calculo de passos
-    // CalculaPassos();
-}
-
-function mixGrid()
-{
-    // criar random
-    list = shuffle(list);
-
-}
-
-//preenche a grid com a sequencia de elementos
-function fillGrid(list = [])
-{
-    [...grid.children].forEach(function(item, i) {
-        if(list[i] > 0) {
-            item.classList.add("bg-clear");
-            item.classList.remove("bg-empty");
-            item.innerHTML = list[i];
-        }
-        else {
-            item.classList.add("bg-empty");
-            item.classList.remove("bg-clear");
-            item.innerHTML = "";
-        }
-    });
-}
-
-//clique na box para mexer
-function handleClickBox(e)
-{
-    let elem = e.target.id;
-    let box = elem.substr(3);
-
-    if(moveBox(box))
-        validateGrid();
-}
-
-//movimenta box atraves da edicao de list
-function moveBox(boxIndex) {
-
-    let box = document.querySelector("#tb_" + boxIndex);
-    let destinyIndex = getFreeBox(boxIndex);
-    let moved = false;
-
-    if(destinyIndex !== false){
-        list[destinyIndex] = parseInt(box.innerHTML);
-        list[boxIndex] = 0;
-
-        fillGrid(list);
-        setUserMove(++user_moves);
-        //console.log(list);
-        moved = true;
-    }
-
-    return moved;
-}
+//fator de busca
+let fator_busca = "";
 
 //verifica se chegou a resposta final
 function validateGrid() {
 
     let success = true;
 
-    success = list.filter((val, index) => {
+    success = listaLayout.filter((val, index) => {
         if(val.length == 0)
             val = 0;
         return val == parseInt(gabarito[index]);
     }).length == gabarito.length;
 
     if(success)
-        alert("Parabéns, você completou o puzzle após " + user_moves + " tentativas");
+        setTimeout(() => {
+            alert("Parabéns, você completou o puzzle após " + user_moves + " tentativas");
+        });
 }
 
 //busca box vazia ao redor da box clicada
@@ -147,13 +68,6 @@ function shuffle(array) {
         array[randomIndex] = temporaryValue;
     }
     return array;
-}
-
-//atribui valor as movimentos do jogador
-function setUserMove(moves = 0) {
-    user_moves = moves;
-    let tentativas = document.querySelector("#user_moves");
-    tentativas.innerHTML = moves;
 }
 
 //calcula a quantidade de peças fora do lugar
@@ -191,7 +105,7 @@ function calculateSumOfManhattanDistances(userList) {
     let x1, x2, y1, y2;
     let sum = 0, manhattanDistance;
 
-    for (var i = 0; i < 9; i++) {
+    for (let i = 0; i < 9; i++) {
         pos = searchNumberInsideGrid(userList, perfectList[i]);
 
         x1 = Math.floor(i / 3);
@@ -207,10 +121,3 @@ function calculateSumOfManhattanDistances(userList) {
 
     return sum;
 }
-
-let button_solve = document.querySelector('#btnSolve');
-let button_mix = document.querySelector('#btnMix');
-let buttons_move = document.querySelectorAll(".box");
-
-//inicia toda aplicacao
-window.addEventListener("load", init);

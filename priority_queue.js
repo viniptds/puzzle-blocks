@@ -1,27 +1,48 @@
-let lista = []
+//objeto para controle da fila de prioridade e suas operações
+var PriorityQueue = function() {
+    
+    var that = {};
 
-function inserir(caminhoPercorrido, funcaoAvaliacao){
-    let obj = {
-        caminho: [caminhoPercorrido],
-        custo: funcaoAvaliacao
+    let __prioriQueue;
+
+    that.init = function() {
+        __prioriQueue = [];
     };
 
-    //console.log("Caminho percorrido: " )
-    //console.log(obj.caminho);
+    that.inserir = function(caminhoPercorrido, funcaoAvaliacao){
+        let obj = {
+            caminho: [caminhoPercorrido],
+            custo: funcaoAvaliacao
+        };
+        let pos = 0;
+        __prioriQueue.forEach((element, i) => {
+            if(element.custo < __prioriQueue[pos])
+                pos = i;
+        });
+        __prioriQueue.splice(pos, 0, obj);
+        // console.log(__prioriQueue);
+    };
 
-    lista.push(obj);
-    lista.sort((ant, atual) => {return ant.custo > atual.custo})
+    that.remove = function(){
+        return __prioriQueue.shift();
+    };
+
+    that.isEmpty = function(){
+        return __prioriQueue.length == 0;
+    };
+
+    that.getFirst = function(){
+        return __prioriQueue[__prioriQueue.length-1] || false;
+    }
+
+    that.getAsList = function(){
+        return __prioriQueue;
+    }
+
+    that.init();
+
+    return that;
 }
 
-function remove(){
-    return lista.shift();
-}
-
-
-function inicializa(){
-    lista = []
-}
-
-function isEmpty(){
-    return lista.length == 0;
-}
+// q = new PriorityQueue();
+// console.log(q);
