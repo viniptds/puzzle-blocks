@@ -152,11 +152,61 @@ function setUserMove(moves = 0) {
     tentativas.innerHTML = moves;
 }
 
+//calcula a quantidade de peças fora do lugar
+function calculateNumberOfMisplacedPieces(userList) {
+    let perfectList = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+    let cont = 0;
+
+    for (var i = 0; i < 9; i++) {
+        if (userList[i] != perfectList[i]) {
+            cont++;
+        }
+    }
+
+    return cont;
+}
+
+//busca exaustiva para a distância Manhattan
+function searchNumberInsideGrid(list, number) {
+    let pos = 0;
+
+    while (pos < 9 && list[i] != number) {
+        pos++;
+    }
+
+    if (pos < 9) {
+        return pos;
+    } else {
+        return -1;
+    }
+}
+
+//calcula a soma das Distâncias Manhattan entre a matriz atual e a matriz necessária para o usuário ganhar
+function calculateSumOfManhattanDistances(userList) {
+    let perfectList = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+    let x1, x2, y1, y2;
+    let sum = 0, manhattanDistance;
+
+    for (var i = 0; i < 9; i++) {
+        pos = searchNumberInsideGrid(userList, perfectList[i]);
+
+        x1 = Math.floor(i / 3);
+        y1 = i % 3;
+
+        x2 = Math.floor(pos / 3);
+        y2 = pos % 3;
+
+        manhattanDistance = Math.abs(x1 - x2) + Math.abs(y1 - y2);
+
+        sum = sum + manhattanDistance;
+    }
+
+    return sum;
+}
 
 let button_solve = document.querySelector('#btnSolve');
 let button_mix = document.querySelector('#btnMix');
 let buttons_move = document.querySelectorAll(".box");
-
 
 //inicia toda aplicacao
 window.addEventListener("load", init);
