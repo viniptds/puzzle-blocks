@@ -10,7 +10,7 @@
 <body>
     <div class="center">
 
-        <div class="header"><h1>Inteligência Artificial - Puzzle 9 Blocks</h1></div>
+        <div class="header"><h1>Inteligência Artificial - Puzzle 8 Blocks</h1></div>
 
         <div id="grid">
             <div id="tb_0" class="box"></div>
@@ -24,19 +24,41 @@
             <div id="tb_8" class="box"></div>
         </div>
 
-        <div class="buttons">
-            <button type="button" id="btnSolve">Resolver</button>
-            <button type="button" id="btnMix">Embaralhar</button>
-            <!-- <button type="button" id="btnReset" class="bg-danger">Reiniciar</button> -->
-        </div>
+        <form method="post">
+            <div class="options">
+                <select id="search_algorith" required>
+                    <option value="">Algoritmo de Busca</option>
+                    <option value="bestFirst">Best First</option>
+                    <option value="aStar">A*</option>
+                </select>
+                
+                <select id="search_factor" required>
+                    <option value="">Fator</option>
+                    <option value="1">Caixas fora do lugar</option>
+                    <option value="2">Distância Manhattan</option>
+                </select>
+            </div>
+            
+            <div class="buttons">
+                <button type="submit" id="btnSolve">Resolver</button>
+                <button type="button" id="btnMix">Embaralhar</button>
+                <!-- <button type="button" id="btnReset" class="bg-danger">Reiniciar</button> -->
+            </div>
+        </form>
 
         <div class="stats">
             <p>Tentativas do Jogador: <span id="user_moves" class="bold" >0</span></p>
             <p>Tentativas Necessárias: <span id="system_moves" class="bold" >0</span></p>
         </div>
     </div>
+
+    <div id="report_end_match">
+        
+    </div>
 </body>
+
 <script src="priority_queue.js"></script>
 <script src="index.js"></script>
 <script src="ai.js"></script>
+<script src="layout.js"></script>
 </html>
