@@ -19,6 +19,9 @@ function CalculaPassos() {
 function getEmptyBox(matriz) {
     let index = 0;
 
+    //console.log("Matriz: ")
+    //console.log(matriz);
+
     matriz.forEach((item, i) => {
         if(item == 0) index = i;
     });
@@ -27,8 +30,7 @@ function getEmptyBox(matriz) {
 
 function possibilidade(lista, passoAnterior = []) {
     let possibilidades = [];
-    console.log("Lista atual:")
-    console.log(lista);
+    
     let indexEmptyBox = getEmptyBox(lista);
 
     // console.log(indexEmptyBox);
@@ -38,7 +40,7 @@ function possibilidade(lista, passoAnterior = []) {
 
         listaTemp[indexEmptyBox] = lista[val];
         listaTemp[val] = 0;
-        console.log(listaTemp);
+        //console.log(listaTemp);
         if(!isEqual(passoAnterior, listaTemp))
             possibilidades[i] = listaTemp;
         listaTemp = [];
@@ -53,7 +55,7 @@ function buscaRota(lista, gabarito, caminho, count = 4) {
         let maior = [0, 0];
 
         let possibilidades = possibilidade(lista, caminho[caminho.length-1]);
-        console.log(possibilidades);
+        //console.log(possibilidades);
 
         let melhor_filho = possibilidades
         .forEach((item, i) => {
@@ -111,6 +113,9 @@ function bestFirst(gabarito, listaInicial){
     while(!isEmpty()){
         elemento = remove();
 
+
+        //console.log(elemento);
+
         contAux++;
 
         console.log("Iteração")
@@ -118,6 +123,11 @@ function bestFirst(gabarito, listaInicial){
 
         caminhoPercorrido = elemento.caminho;
         ultimoEstado = caminhoPercorrido[caminhoPercorrido.length - 1];
+
+        //console.log("Caminho percorrido");
+        //console.log(caminhoPercorrido);
+        //console.log("Último estado");
+        //console.log(ultimoEstado);
 
         if(ultimoEstado == gabarito)
             return caminhoPercorrido;
@@ -142,16 +152,23 @@ function bestFirst(gabarito, listaInicial){
                 possibilidades = possibilidade(ultimoEstado);
                 possibilidadesSeraoInseridas = possibilidades;
             }
-
+            /*
             console.log("Possibilidades");
             console.log(possibilidades)
             console.log("Caminho percorrido");
             console.log(caminhoPercorrido);
             console.log("Último estado");
             console.log(ultimoEstado);
-
+            */
 
             for(let i = 0; i < possibilidadesSeraoInseridas.length; i++){
+                console.log("Possibilidade atual");
+                console.log(possibilidadesSeraoInseridas[i]);
+                console.log("Caminho percorrido");
+                console.log(caminhoPercorrido);
+                let listaSeraInserida = caminhoPercorrido.push(possibilidadesSeraoInseridas[i]);
+                console.log("Lista alterada");
+                console.log(listaSeraInserida);
                 inserir(caminhoPercorrido.push(possibilidadesSeraoInseridas[i]),
                                                getNumOfBoxesOutsidePlace(possibilidadesSeraoInseridas[i], gabarito));                     
             }
