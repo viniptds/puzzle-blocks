@@ -42,6 +42,10 @@ function init(e)
     if(e.type == 'click')
         mixGrid();
 
+    let caminho = bestFirst(gabarito, list);
+
+    list = caminho[caminho.length - 1];
+
     fillGrid(list);
     
     //calculo de passos
@@ -95,7 +99,7 @@ function moveBox(boxIndex) {
 
         fillGrid(list);
         setUserMove(++user_moves);
-        console.log(list);
+        //console.log(list);
         moved = true;
     }
 
@@ -183,7 +187,7 @@ function searchNumberInsideGrid(list, number) {
 
 //calcula a soma das Distâncias Manhattan entre a matriz atual e a matriz necessária para o usuário ganhar
 function calculateSumOfManhattanDistances(userList) {
-    let perfectList = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+    let perfectList = gabarito;
     let x1, x2, y1, y2;
     let sum = 0, manhattanDistance;
 
