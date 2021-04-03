@@ -9,7 +9,6 @@ let best_sequence = [];
 function CalculaPassos() {
     let caminho = new Array();
     buscaRota(list, gabarito, caminho);
-    // console.log(caminho);
     caminho.forEach((item) => {
         setTimeout(() => { fillGrid(item) }, 2000);
     })
@@ -18,10 +17,6 @@ function CalculaPassos() {
 //retorna indice da caixa vazia
 function getEmptyBox(matriz) {
     let index = 0;
-
-    //console.log("Matriz: ")
-    //console.log(matriz);
-
     matriz.forEach((item, i) => {
         if(item == 0) index = i;
     });
@@ -33,14 +28,12 @@ function possibilidade(lista, passoAnterior = []) {
     
     let indexEmptyBox = getEmptyBox(lista);
 
-    // console.log(indexEmptyBox);
 
     moves[indexEmptyBox].forEach((val, i) => {
         let listaTemp = new Array(...lista);
 
         listaTemp[indexEmptyBox] = lista[val];
         listaTemp[val] = 0;
-        //console.log(listaTemp);
         if(!isEqual(passoAnterior, listaTemp))
             possibilidades[i] = listaTemp;
         listaTemp = [];
@@ -55,7 +48,6 @@ function buscaRota(lista, gabarito, caminho, count = 4) {
         let maior = [0, 0];
 
         let possibilidades = possibilidade(lista, caminho[caminho.length-1]);
-        //console.log(possibilidades);
 
         let melhor_filho = possibilidades
         .forEach((item, i) => {
@@ -76,10 +68,51 @@ function isEqual(lista1, lista2) {
     }).length == lista2;
 }
 
+function eIgual(l1, l2)
+{
+    if(!l1 || !l2)
+        return false;
+
+    if(l1.length != l2.length)
+        return false;
+
+    let contIguais = 0;
+
+    console.log("L1");
+    console.log(l1);
+    console.log("L2");
+    console.log(l2);
+
+    while(contIguais < l1.length && l1[contIguais] == l2[contIguais])
+    {
+        contIguais++;
+    }
+
+    return contIguais == l1.length;
+}
+
 function getNumOfBoxesOutsidePlace(lista, gabarito) {
     return lista.filter((item, index) => {
         return item != gabarito[index]
     }).length;
+}
+
+function numeroPecasForaDoLugar(matriz, gabarito){
+    let pos = 0;
+    let cont = 0;
+    /*
+    console.log("Possibilidade")
+    console.log(matriz);
+    console.log("Gabarito");
+    console.log(gabarito);
+    */
+    for(pos = 0; pos < matriz.length; pos++){
+        if(matriz[pos] != gabarito[pos]){
+            cont++;
+        }
+    }
+
+    return cont;
 }
 
 function calculateSumOfManhattanDistances(userList, gabarito) {
@@ -105,73 +138,95 @@ function calculateSumOfManhattanDistances(userList, gabarito) {
 }
 
 function bestFirst(gabarito, listaInicial){
-    inicializa();
+    pq = new PriorityQueue();
+
+    let ultimoEstado = [];
+    let caminhoPercorrido;
     let contAux = 0;
+    let custo = numeroPecasForaDoLugar(listaInicial, gabarito);
+    let listaCaminho = [];
 
-    inserir(listaInicial, getNumOfBoxesOutsidePlace(listaInicial, gabarito));
+    listaCaminho.push({vetor: listaInicial});
 
-    while(!isEmpty()){
-        elemento = remove();
-
-
-        //console.log(elemento);
+    pq.inserir(listaCaminho, custo);
+    
+    while(!pq.isEmpty()){
+        elemento = pq.remove();
 
         contAux++;
-
-        console.log("Iteração")
-        console.log(contAux);
-
+    
         caminhoPercorrido = elemento.caminho;
-        ultimoEstado = caminhoPercorrido[caminhoPercorrido.length - 1];
-
-        //console.log("Caminho percorrido");
-        //console.log(caminhoPercorrido);
-        //console.log("Último estado");
-        //console.log(ultimoEstado);
+        ultimoEstado = caminhoPercorrido[caminhoPercorrido.length - 1].vetor;
 
         if(ultimoEstado == gabarito)
+        {
             return caminhoPercorrido;
+        }
         else{
+            //console.log("ultimoEstado");
+            //console.log(ultimoEstado);
+
             let possibilidades;
             let possibilidadesSeraoInseridas = [];
 
             if(caminhoPercorrido.length > 1){
-                possibilidades = possibilidade(ultimoEstado, caminhoPercorrido[caminhoPercorrido.length - 2]);
+                possibilidades = possibilidade(ultimoEstado, caminhoPercorrido[caminhoPercorrido.length - 1].vetor);
 
-                for(let i = 0; i < possibilidades; i++){
+                for(let i = 0; i < possibilidades.length; i++){
                     let pos = 0;
 
-                    while(pos < caminhoPercorrido.length && !isEqual(possibilidades[i], caminhoPercorrido[pos]))
+                    console.log("Possibilidade");
+                    console.log(possibilidades[i]);
+                    console.log("Gabarito");
+                    console.log(gabarito);
+                    console.log(eIgual(possibilidades[i], gabarito));
+
+                    while(pos < caminhoPercorrido.length && !eIgual(possibilidades[i], caminhoPercorrido[pos].vetor))
+                    {
+                        /*console.log("Caminho percorrido");
+                        console.log(caminhoPercorrido[pos].vetor);*/
                         pos++;
+                    }
 
                     if(pos == caminhoPercorrido.length){
-                        possibilidadesSeraoInseridas.push(possibilidades[i]);
+    
+                        custo = numeroPecasForaDoLugar(possibilidades[i], gabarito);
+                        //console.log("Esta possibilidade será inserida, com o custo: " + custo)
+                        //console.log(possibilidades[i]);
+                        if(custo < numeroPecasForaDoLugar(ultimoEstado, gabarito)){
+                            possibilidadesSeraoInseridas.push(possibilidades[i]);
+                        }
                     }
                 }
             }else{
                 possibilidades = possibilidade(ultimoEstado);
                 possibilidadesSeraoInseridas = possibilidades;
+
             }
-            /*
-            console.log("Possibilidades");
-            console.log(possibilidades)
-            console.log("Caminho percorrido");
-            console.log(caminhoPercorrido);
-            console.log("Último estado");
-            console.log(ultimoEstado);
-            */
 
             for(let i = 0; i < possibilidadesSeraoInseridas.length; i++){
-                console.log("Possibilidade atual");
-                console.log(possibilidadesSeraoInseridas[i]);
-                console.log("Caminho percorrido");
-                console.log(caminhoPercorrido);
-                let listaSeraInserida = caminhoPercorrido.push(possibilidadesSeraoInseridas[i]);
-                console.log("Lista alterada");
-                console.log(listaSeraInserida);
-                inserir(caminhoPercorrido.push(possibilidadesSeraoInseridas[i]),
-                                               getNumOfBoxesOutsidePlace(possibilidadesSeraoInseridas[i], gabarito));                     
+                let listaSeraInserida = caminhoPercorrido.slice(0);
+                listaSeraInserida.push({vetor: possibilidadesSeraoInseridas[i]});
+                
+                if(isEqual(possibilidadesSeraoInseridas[i], gabarito))
+                    {
+                        console.log("aaaaaa");
+                        return listaSeriaInserida;
+                    }
+
+                custo = numeroPecasForaDoLugar(possibilidadesSeraoInseridas[i], gabarito);
+                pq.inserir(listaSeraInserida, custo);                     
+                
             }
+
+            console.log(contAux);
         }
     }
+
+    console.log("ULTIMO ESTADO");
+    console.log(ultimoEstado);
+    let retorno = caminhoPercorrido.slice(0);
+    retorno.push({vetor: ultimoEstado});
+
+    return retorno;
 }

@@ -23,7 +23,10 @@ function init(e)
 
     let caminho = bestFirst(gabarito, listaLayout);
 
-    listaLayout = caminho[caminho.length - 1];
+    console.log("Caminho");
+    console.log(caminho);
+
+    listaLayout = caminho[caminho.length - 1].vetor;
 
     fillGrid(listaLayout);
     

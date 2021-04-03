@@ -11,16 +11,21 @@ var PriorityQueue = function() {
 
     that.inserir = function(caminhoPercorrido, funcaoAvaliacao){
         let obj = {
-            caminho: [caminhoPercorrido],
+            caminho: caminhoPercorrido,
             custo: funcaoAvaliacao
         };
+
         let pos = 0;
+        
         __prioriQueue.forEach((element, i) => {
-            if(element.custo < __prioriQueue[pos])
+            if(element.custo < __prioriQueue[pos].custo)
                 pos = i;
         });
+        
+        //console.log(pos);
+
         __prioriQueue.splice(pos, 0, obj);
-        // console.log(__prioriQueue);
+        //console.log(__prioriQueue);
     };
 
     that.remove = function(){
@@ -45,4 +50,4 @@ var PriorityQueue = function() {
 }
 
 // q = new PriorityQueue();
-// console.log(q);
+// console.log(q);sl()ss
