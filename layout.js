@@ -16,17 +16,15 @@ function init(e)
     // button_solve.addEventListener("click", CalculaPassos);
 
     setUserMove(0);
-    listaLayout = [1,6,2,4,0,3,7,5,8];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
+    listaLayout = [7, 1, 4, 3, 0, 6, 5, 2, 8];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
 
     if(e.type == 'click')
         mixGrid();
 
     let caminho = bestFirst(gabarito, listaLayout);
 
-    console.log("Caminho");
-    console.log(caminho);
-
     listaLayout = caminho[caminho.length - 1].vetor;
+    console.log("Profundidade: " + caminho.length);
 
     fillGrid(listaLayout);
     

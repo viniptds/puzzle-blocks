@@ -1,12 +1,12 @@
 //objeto para controle da fila de prioridade e suas operações
-var PriorityQueue = function() {
+/*var PriorityQueue = function() {
     
     var that = {};
 
     let __prioriQueue;
 
     that.init = function() {
-        __prioriQueue = [];
+        __prioriQueue = new Array();
     };
 
     that.inserir = function(caminhoPercorrido, funcaoAvaliacao){
@@ -17,22 +17,22 @@ var PriorityQueue = function() {
 
         let pos = 0;
         
-        __prioriQueue.forEach((element, i) => {
-            if(element.custo < __prioriQueue[pos].custo)
-                pos = i;
-        });
+        while(pos < __prioriQueue.length && __prioriQueue[pos].custo < obj.custo)
+        {
+            pos++;
+        }
         
-        //console.log(pos);
+        console.log(pos);
 
         __prioriQueue.splice(pos, 0, obj);
-        //console.log(__prioriQueue);
+        console.log(__prioriQueue);
     };
 
     that.remove = function(){
         return __prioriQueue.shift();
     };
 
-    that.isEmpty = function(){
+    that.vazia = function(){
         return __prioriQueue.length == 0;
     };
 
@@ -51,3 +51,4 @@ var PriorityQueue = function() {
 
 // q = new PriorityQueue();
 // console.log(q);sl()ss
+*/

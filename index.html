@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzle 9 Blocks</title>
+    <title>8-Puzzle</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,11 +29,11 @@
                 <select id="search_algorith" required>
                     <option value="">Algoritmo de Busca</option>
                     <option value="bestFirst">Best First</option>
-                    <option value="aStar">A*</option>
+                    <option value="aStar">Hill Climbing</option>
                 </select>
                 
                 <select id="search_factor" required>
-                    <option value="">Fator</option>
+                    <option value="">Função de Avaliação</option>
                     <option value="1">Caixas fora do lugar</option>
                     <option value="2">Distância Manhattan</option>
                 </select>
@@ -57,7 +57,7 @@
     </div>
 </body>
 
-<script src="priority_queue.js"></script>
+<script src="Fila_Prioridade.js"></script>
 <script src="index.js"></script>
 <script src="ai.js"></script>
 <script src="layout.js"></script>
