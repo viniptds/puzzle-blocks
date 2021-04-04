@@ -4,6 +4,16 @@ let grid = document.querySelector("#grid");
 //lista de elementos
 var listaLayout = [];
 
+
+function sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds){
+        break;
+      }
+    }
+}
+
 //inicia a aplicacao
 function init(e)
 {
@@ -16,7 +26,7 @@ function init(e)
     // button_solve.addEventListener("click", CalculaPassos);
 
     setUserMove(0);
-    listaLayout = [7, 1, 4, 3, 0, 6, 5, 2, 8];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
+    listaLayout = [4, 1, 3, 0, 2, 5, 7, 8, 6];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
 
     if(e.type == 'click')
         mixGrid();
@@ -24,9 +34,15 @@ function init(e)
     let caminho = bestFirst(gabarito, listaLayout);
 
     listaLayout = caminho[caminho.length - 1].vetor;
-    console.log("Profundidade: " + caminho.length);
 
-    fillGrid(listaLayout);
+    console.log("Profundidade = " + (caminho.length - 1))
+
+    for(let i = 0; i < caminho.length; i++){
+        elemento = caminho[i];
+        
+        fillGrid(elemento.vetor); 
+        
+    }
     
     //calculo de passos
     // CalculaPassos();
