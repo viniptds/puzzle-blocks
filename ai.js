@@ -141,7 +141,6 @@ function calculateSumManhattanDIstance(userList, gabarito) {
             manhattanDistance = Math.abs(x1 - x2) + Math.abs(y1 - y2);
 
             sum = sum + manhattanDistance;
-        
     }
 
     return sum;
@@ -242,4 +241,94 @@ function bestFirst(gabarito, listaInicial)
         }
     }
    return null;
+}
+
+let estadosPercorridosHC;
+
+function hillClimbing(gabarito, estadoInicial)
+{
+    estadosPercorridosHC = [];
+    let listaCaminho = [];
+
+    listaCaminho.push({vetor: estadoInicial});
+    estadosPercorridosHC.push({vetor: estadoInicial});
+
+    let obj = {caminho: listaCaminho, custo: numeroPecasForaDoLugar(estadoInicial, gabarito)};
+
+    return hillClimbingAux(gabarito, obj);
+}
+
+function hillClimbingAux(gabarito, estadoAtual)
+{
+    //Critério de parada
+    if(estadoAtual.custo == 0)
+    {
+        console.log("CUSTO ZERO: " + estadoAtual.custo);
+        console.log(estadoAtual.caminho);
+        return estadoAtual.caminho;
+    }
+    else //Passo recursivo
+    {
+        let caminhoPercorrido = estadoAtual.caminho;
+        console.log("Estado");
+        console.log(estadoAtual);
+        let ultimoEstado = caminhoPercorrido[caminhoPercorrido.length - 1].vetor;
+        let menorCustoPossibilidades = 10;
+
+        let possibilidades;
+        let melhorPossibilidade = []
+
+        if(caminhoPercorrido.length > 1)
+        {
+            possibilidades = possibilidade(ultimoEstado, caminhoPercorrido[caminhoPercorrido.length - 2]);
+        }
+        else
+        {
+            possibilidades = possibilidade(ultimoEstado);
+        }
+
+        for(let i = 0; i < possibilidades.length; i++)
+            {
+                let pos = 0;
+
+                while(pos < estadosPercorridosHC.length && !eIgual(possibilidades[i], estadosPercorridosHC[pos].vetor))
+                {
+                    pos++;
+                }
+
+                if(pos == estadosPercorridosHC.length)
+                {
+                    custo = numeroPecasForaDoLugar(possibilidades[i], gabarito);
+
+                    if(custo < menorCustoPossibilidades)
+                    {
+                        menorCustoPossibilidades = custo;
+                        melhorPossibilidade = possibilidades[i];
+                    }
+                    else if(custo == menorCustoPossibilidades)
+                    {
+                        if(calculateSumManhattanDIstance(possibilidades[i], gabarito) <
+                            calculateSumManhattanDIstance(melhorPossibilidade, gabarito)){
+                                melhorPossibilidade = possibilidades[i];
+                            }
+                    }
+
+                }
+            }
+
+            //console.log("Menor custo: " + menorCustoPossibilidades);
+
+            let listaSeraInserida = caminhoPercorrido.slice(0);
+            //console.log("Melhor possibilidade:");
+            //console.log(melhorPossibilidade);
+            listaSeraInserida.push({vetor: melhorPossibilidade});
+            estadosPercorridosHC.push({vetor: melhorPossibilidade});
+
+            let obj = {
+                caminho: listaSeraInserida,
+                custo: menorCustoPossibilidades
+            };
+
+            return hillClimbingAux(gabarito, obj);
+    }
 }

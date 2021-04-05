@@ -26,12 +26,15 @@ function init(e)
     // button_solve.addEventListener("click", CalculaPassos);
 
     setUserMove(0);
-    listaLayout = [4, 1, 3, 0, 2, 5, 7, 8, 6];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
+    listaLayout = [4, 0, 1, 8, 3, 2, 7, 6, 5];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
 
     if(e.type == 'click')
         mixGrid();
 
-    let caminho = bestFirst(gabarito, listaLayout);
+    let caminho = hillClimbing(gabarito, listaLayout);
+
+    console.log("Caminho layout");
+    console.log(caminho);
 
     listaLayout = caminho[caminho.length - 1].vetor;
 
