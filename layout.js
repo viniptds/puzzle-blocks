@@ -16,13 +16,12 @@ function init(e)
         //embaralha
         mixGrid();
     }
+    else {
+        listaLayout = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+    }
     
     setUserMove(0);
-    listaLayout = [1, 2, 3, 4, 5, 6, 7, 8, 0];
     //[1,6,2,4,0,3,7,5,8];
-
-    if(e.type == 'click')
-        mixGrid();
 
     fillGrid(listaLayout);
 
@@ -172,8 +171,29 @@ function fillGrid(list = [])
 function mixGrid()
 {
     // criar random
-    listaLayout = shuffle(listaLayout);
 
+    random_iterations = Math.floor(Math.random() * 100) + 50; //50 a 150 movimentos aleatorios
+    console.log(random_iterations);
+    let lista2 = random_moves(listaLayout, random_iterations);
+    console.log(lista2);
+    listaLayout = lista2;
+    // listaLayout = shuffle(listaLayout);
+
+}
+
+function random_moves(lista, movimentos = 0){
+    console.log(movimentos);
+    if(movimentos == 0)
+    {
+        return lista;
+    }
+    else{
+        possibilidades = possibilidade(lista);
+
+        let poss_i = Math.floor(Math.random() * possibilidades.length);
+        console.log(possibilidades[poss_i]);
+        return random_moves(possibilidades[poss_i], movimentos-1);
+    }
 }
 
 // --------------------
