@@ -74,6 +74,15 @@ button:hover {
     background-color: sienna;
 }
 
-#report_end_match {
+.display-none {
     display: none;
+}
+
+.report-box-matrix {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    float: left;
+    margin: 10px 30px;
+    font-size: 30px;
 }

@@ -5,81 +5,144 @@ let grid = document.querySelector("#grid");
 var listaLayout = [];
 
 
-function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-      if ((new Date().getTime() - start) > milliseconds){
-        break;
-      }
-    }
-}
-
 //inicia a aplicacao
 function init(e)
 {
     //acoes disparadas
-    button_mix.addEventListener("click", init);
-    buttons_move.forEach((button) => {
-        button.addEventListener("click", handleClickBox);
-    })
+    switchActions(true);
 
-    // button_solve.addEventListener("click", CalculaPassos);
-
+    if(e.type == 'click')
+    {
+        //embaralha
+        mixGrid();
+    }
+    
     setUserMove(0);
-    listaLayout = [4, 0, 1, 8, 3, 2, 7, 6, 5];//[1, 2, 3, 4, 5, 6, 7, 0, 8];
+    listaLayout = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+    //[1,6,2,4,0,3,7,5,8];
 
     if(e.type == 'click')
         mixGrid();
 
-    let caminho = hillClimbing(gabarito, listaLayout);
+    fillGrid(listaLayout);
 
-    console.log("Caminho layout");
-    console.log(caminho);
-
-    listaLayout = caminho[caminho.length - 1].vetor;
-
-    console.log("Profundidade = " + (caminho.length - 1))
-
-    for(let i = 0; i < caminho.length; i++){
-        elemento = caminho[i];
-        
-        fillGrid(elemento.vetor); 
-        
-    }
-    
     //calculo de passos
     // CalculaPassos();
+
 }
 
-//clique na box para mexer
-function handleClickBox(e)
-{
-    let elem = e.target.id;
-    let box = elem.substr(3);
+function solve() {
 
-    if(moveBox(box))
-        validateGrid();
-}
+    setUserMove(0);
+    switchActions(false);
 
+    let canGo = true;
+    let selected_algorithm = document.querySelector("#search_algorithm");
+    let algoritmo_busca = '';
+    
+    let selected_fator = document.querySelector("#search_factor");
+    let fator_busca = '';
 
-//movimenta box atraves da edicao de list
-function moveBox(boxIndex) {
+    if(!selected_algorithm || !algoritmos_busca.includes(selected_algorithm.value)) {
+        alert("Selecione algoritmo de busca");
+        canGo = false;
+    } else {
+        algoritmo_busca = selected_algorithm.value;
 
-    let box = document.querySelector("#tb_" + boxIndex);
-    let destinyIndex = getFreeBox(boxIndex);
-    let moved = false;
+        if(!selected_fator || !fatores_busca.includes(selected_fator.value)) {
+            alert("Selecione função de avaliação");
+            canGo = false;
+        } else {
+            fator_busca = selected_fator.value;
+            let caminho = [];
 
-    if(destinyIndex !== false){
-        listaLayout[destinyIndex] = parseInt(box.innerHTML);
-        listaLayout[boxIndex] = 0;
+            let apenasManhattan = fator_busca == 'distanciaManhattan';
 
-        fillGrid(listaLayout);
-        setUserMove(++user_moves);
-        //console.log(list);
-        moved = true;
+            if(algoritmo_busca == "bestFirst") {
+                caminho = bestFirst(gabarito, listaLayout, apenasManhattan);
+                console.log("Caminho Best First");
+            }
+            else if(algoritmo_busca == 'hillClimbing') {
+                caminho = hillClimbing(gabarito, listaLayout, apenasManhattan);
+                console.log("Caminho HillClimbing");
+            }
+            console.log(caminho);
+            showSteps(caminho);
+            animateCaminho(caminho);
+            switchActions(true);
+        }
     }
+    
+    switchActions(true);
+}
 
-    return moved;
+async function animateCaminho(caminho){
+
+    if(caminho && caminho.length > 0)
+    {
+        listaLayout = caminho[0].vetor;
+        fillGrid(caminho[0].vetor);
+        caminho.splice(0, 1);
+
+        setTimeout(() => {
+            animateCaminho(caminho);
+        }, 700);
+    }else return true;
+}
+
+function showSteps(caminho){
+    let div_box = document.querySelector('#report_matrizes');
+    if(caminho && caminho.length > 0)
+    {
+        let child_box = document.querySelectorAll("#report_matrizes div");
+        child_box.forEach((item) => {
+            div_box.removeChild(item);
+        });
+
+        div_box.classList.remove('display-none');
+        caminho.forEach((item) => {
+            let box_matrix = document.createElement("div");
+            box_matrix = createMatrixFromList(item.vetor);
+            // console.log(box_matrix);
+            div_box.append(box_matrix);
+        })
+    }
+    else
+        div_box.classList.add('display-none');
+}
+
+function createMatrixFromList(list)
+{
+    let ret = document.createElement("div");
+    ret.classList.add("report-box-matrix");
+
+    for (let i = 0; i < list.length; i++) {
+        ret.innerHTML += " " +list[i];
+        if((i+1) % 3 == 0) {
+            ret.innerHTML += "<br>";
+        }
+    }
+    return ret;
+}
+
+
+function switchActions(operation){
+    if(operation){
+        button_mix.addEventListener("click", init);
+        buttons_move.forEach((button) => {
+            button.addEventListener("click", handleClickBox);
+        });
+
+        button_solve.addEventListener("click", solve);
+    }
+    else{
+        button_mix.onclick = false;
+        buttons_move.forEach((button) => {
+            button.onclick = false;
+        })
+
+        button_solve.onclick = false;
+    }
 }
 
 
@@ -108,6 +171,39 @@ function mixGrid()
 
 }
 
+// --------------------
+// Operações do User
+// --------------------
+
+//clique na box para mexer
+function handleClickBox(e)
+{
+    let elem = e.target.id;
+    let box = elem.substr(3);
+
+    if(moveBox(box))
+        validateGrid();
+}
+
+//movimenta box atraves da edicao de list
+function moveBox(boxIndex) {
+
+    let box = document.querySelector("#tb_" + boxIndex);
+    let destinyIndex = getFreeBox(boxIndex);
+    let moved = false;
+
+    if(destinyIndex !== false){
+        listaLayout[destinyIndex] = parseInt(box.innerHTML);
+        listaLayout[boxIndex] = 0;
+
+        fillGrid(listaLayout);
+        setUserMove(++user_moves);
+        //console.log(list);
+        moved = true;
+    }
+
+    return moved;
+}
 
 //atribui valor as movimentos do jogador
 function setUserMove(moves = 0) {

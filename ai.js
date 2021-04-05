@@ -4,16 +4,6 @@ lista
 [ 1,6,2,4,0,3,7,5,8 ]
 */
 
-let best_sequence = [];
-
-function CalculaPassos() {
-    let caminho = new Array();
-    buscaRota(list, gabarito, caminho);
-    caminho.forEach((item) => {
-        setTimeout(() => { fillGrid(item) }, 2000);
-    })
-}
-       
 //retorna indice da caixa vazia
 function getEmptyBox(matriz) {
     let index = 0;
@@ -23,7 +13,7 @@ function getEmptyBox(matriz) {
     return index;
 }
 
-function possibilidade(lista, passoAnterior = []) {
+function possibilidade(lista) {
     let possibilidades = [];
     
     let indexEmptyBox = getEmptyBox(lista);
@@ -34,68 +24,12 @@ function possibilidade(lista, passoAnterior = []) {
 
         listaTemp[indexEmptyBox] = lista[val];
         listaTemp[val] = 0;
-        if(!isEqual(passoAnterior, listaTemp))
-            possibilidades.push(listaTemp);
+        possibilidades.push(listaTemp);
         listaTemp = [];
     });
     return possibilidades;
 }
 
-function buscaRota(lista, gabarito, caminho, count = 4) {
-
-    if(!isEqual(lista, gabarito) && count > 0)
-    {
-        let maior = [0, 0];
-
-        let possibilidades = possibilidade(lista, caminho[caminho.length-1]);
-
-        let melhor_filho = possibilidades
-        .forEach((item, i) => {
-            let num = getNumOfBoxesInPlace(item, gabarito);
-            if(item > maior[1])
-                maior = [i, item];
-        });
-
-        buscaRota(possibilidades[maior[0]], gabarito, caminho, count-1);
-        caminho.push(possibilidades[maior]);
-    }
-}
-
-function isEqual(lista1, lista2) {
-    return lista1 && lista2 && lista1.length == lista2.length && 
-    lista1.filter((val, i) => {
-        lista2[i] == val
-    }).length == lista2;
-}
-
-function eIgual(l1, l2)
-{
-    if(!l1 || !l2)
-        return false;
-
-    if(l1.length != l2.length)
-        return false;
-
-    let i;
-    /*
-    console.log("L1");
-    console.log(l1);
-    console.log("L2");
-    console.log(l2);
-    */
-
-    for(i = 0; i < l1.length; i++)
-        if(l1[i] != l2[i])
-            return false;
-
-    return true;
-}
-
-function getNumOfBoxesOutsidePlace(lista, gabarito) {
-    return lista.filter((item, index) => {
-        return item != gabarito[index]
-    }).length;
-}
 
 function numeroPecasForaDoLugar(matriz, gabarito)
 {
@@ -146,7 +80,7 @@ function calculateSumManhattanDIstance(userList, gabarito) {
     return sum;
 }
 
-function bestFirst(gabarito, listaInicial)
+function bestFirst(gabarito, listaInicial, apenasManhattan = false)
 {
     pq = new PriorityQueue();
 
@@ -186,16 +120,7 @@ function bestFirst(gabarito, listaInicial)
         }
         else
         {
-            let possibilidades;
-
-            if(caminhoPercorrido.length > 1)
-            {
-                possibilidades = possibilidade(ultimoEstado, caminhoPercorrido[caminhoPercorrido.length - 2].vetor);
-            }
-            else
-            {
-                possibilidades = possibilidade(ultimoEstado);
-            }
+            let possibilidades = possibilidade(ultimoEstado);
 
             //console.log("Possibilidades geradas:");
             //console.log(possibilidades);
@@ -211,7 +136,12 @@ function bestFirst(gabarito, listaInicial)
 
                 if(pos == estadosPercorridos.length)
                 {
-                    custo = numeroPecasForaDoLugar(possibilidades[i], gabarito);
+                    if(apenasManhattan){
+                        custo = calculateSumManhattanDIstance(possibilidades[i], gabarito);
+                    }
+                    else {
+                        custo = numeroPecasForaDoLugar(possibilidades[i], gabarito);
+                    }
 
                     if(custo < menorCustoPossibilidades)
                     {
@@ -240,12 +170,12 @@ function bestFirst(gabarito, listaInicial)
 
         }
     }
-   return null;
+    return null;
 }
 
 let estadosPercorridosHC;
 
-function hillClimbing(gabarito, estadoInicial)
+function hillClimbing(gabarito, estadoInicial, apenasManhattan = false)
 {
     estadosPercorridosHC = [];
     let listaCaminho = [];
@@ -255,10 +185,10 @@ function hillClimbing(gabarito, estadoInicial)
 
     let obj = {caminho: listaCaminho, custo: numeroPecasForaDoLugar(estadoInicial, gabarito)};
 
-    return hillClimbingAux(gabarito, obj);
+    return hillClimbingAux(gabarito, obj, apenasManhattan);
 }
 
-function hillClimbingAux(gabarito, estadoAtual)
+function hillClimbingAux(gabarito, estadoAtual, apenasManhattan)
 {
     //Critério de parada
     if(estadoAtual.custo == 0)
@@ -275,17 +205,8 @@ function hillClimbingAux(gabarito, estadoAtual)
         let ultimoEstado = caminhoPercorrido[caminhoPercorrido.length - 1].vetor;
         let menorCustoPossibilidades = 10;
 
-        let possibilidades;
-        let melhorPossibilidade = []
-
-        if(caminhoPercorrido.length > 1)
-        {
-            possibilidades = possibilidade(ultimoEstado, caminhoPercorrido[caminhoPercorrido.length - 2]);
-        }
-        else
-        {
-            possibilidades = possibilidade(ultimoEstado);
-        }
+        let possibilidades = possibilidade(ultimoEstado);
+        let melhorPossibilidade = [];
 
         for(let i = 0; i < possibilidades.length; i++)
             {
@@ -298,8 +219,12 @@ function hillClimbingAux(gabarito, estadoAtual)
 
                 if(pos == estadosPercorridosHC.length)
                 {
-                    custo = numeroPecasForaDoLugar(possibilidades[i], gabarito);
-
+                    if(apenasManhattan){
+                        custo = calculateSumManhattanDIstance(possibilidades[i], gabarito);
+                    }
+                    else {
+                        custo = numeroPecasForaDoLugar(possibilidades[i], gabarito);
+                    }
                     if(custo < menorCustoPossibilidades)
                     {
                         menorCustoPossibilidades = custo;
@@ -312,7 +237,6 @@ function hillClimbingAux(gabarito, estadoAtual)
                                 melhorPossibilidade = possibilidades[i];
                             }
                     }
-
                 }
             }
 
@@ -329,6 +253,6 @@ function hillClimbingAux(gabarito, estadoAtual)
                 custo: menorCustoPossibilidades
             };
 
-            return hillClimbingAux(gabarito, obj);
+            return hillClimbingAux(gabarito, obj, apenasManhattan);
     }
 }

@@ -20,22 +20,14 @@ let gabarito = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 let user_moves = 0;
 
 //algoritmo de busca
-let algoritmo_busca = "";
+let algoritmos_busca = [ 'bestFirst', 'hillClimbing' ];
 
 //fator de busca
-let fator_busca = "";
+let fatores_busca = [ 'caixasForaDoLugar', 'distanciaManhattan' ];
 
 //verifica se chegou a resposta final
 function validateGrid() {
-
-    let success = true;
-
-    success = listaLayout.filter((val, index) => {
-        if(val.length == 0)
-            val = 0;
-        return val == parseInt(gabarito[index]);
-    }).length == gabarito.length;
-
+    let success = eIgual(gabarito, listaLayout);
     if(success)
         setTimeout(() => {
             alert("Parabéns, você completou o puzzle após " + user_moves + " tentativas");
@@ -120,4 +112,22 @@ function calculateSumOfManhattanDistances(userList) {
     }
 
     return sum;
+}
+
+
+function eIgual(l1, l2)
+{
+    if(!l1 || !l2)
+        return false;
+
+    if(l1.length != l2.length)
+        return false;
+
+    let i;
+
+    for(i = 0; i < l1.length; i++)
+        if(l1[i] != l2[i])
+            return false;
+
+    return true;
 }

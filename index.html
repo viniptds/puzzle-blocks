@@ -26,21 +26,21 @@
 
         <form method="post">
             <div class="options">
-                <select id="search_algorith" required>
+                <select id="search_algorithm" required>
                     <option value="">Algoritmo de Busca</option>
                     <option value="bestFirst">Best First</option>
-                    <option value="aStar">Hill Climbing</option>
+                    <option value="hillClimbing">Hill Climbing</option>
                 </select>
                 
                 <select id="search_factor" required>
                     <option value="">Função de Avaliação</option>
-                    <option value="1">Caixas fora do lugar</option>
-                    <option value="2">Distância Manhattan</option>
+                    <option value="caixasForaDoLugar">Caixas fora do lugar</option>
+                    <option value="distanciaManhattan">Distância Manhattan</option>
                 </select>
             </div>
             
             <div class="buttons">
-                <button type="submit" id="btnSolve">Resolver</button>
+                <button type="button" id="btnSolve">Resolver</button>
                 <button type="button" id="btnMix">Embaralhar</button>
                 <!-- <button type="button" id="btnReset" class="bg-danger">Reiniciar</button> -->
             </div>
@@ -48,12 +48,12 @@
 
         <div class="stats">
             <p>Tentativas do Jogador: <span id="user_moves" class="bold" >0</span></p>
-            <p>Tentativas Necessárias: <span id="system_moves" class="bold" >0</span></p>
+            <!-- <p>Tentativas Necessárias: <span id="system_moves" class="bold" >0</span></p> -->
         </div>
     </div>
 
-    <div id="report_end_match">
-        
+    <div id="report_matrizes" class="display-none">
+        <h2>Relatório de Movimentos</h2><br>
     </div>
 </body>
 
