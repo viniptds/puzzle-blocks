@@ -56,9 +56,9 @@ function solve() {
             fator_busca = selected_fator.value;
             let caminho = [];
 
-            let apenasManhattan = fator_busca == 'distanciaManhattan';
-
-            if(algoritmo_busca == "bestFirst") {
+            let apenasManhattan = (fator_busca == 'distanciaManhattan');
+            console.log(apenasManhattan);
+            if(algoritmo_busca == 'bestFirst') {
                 caminho = bestFirst(gabarito, listaLayout, apenasManhattan);
                 console.log("Caminho Best First");
             }
