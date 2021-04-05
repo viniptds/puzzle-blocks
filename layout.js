@@ -99,13 +99,18 @@ function showSteps(caminho){
             div_box.removeChild(item);
         });
 
+        let count_caminho = document.createElement("h3");
+        count_caminho.innerHTML = "Total de Iterações: " + caminho.length;
+        div_box.append(count_caminho);
+
         div_box.classList.remove('display-none');
-        caminho.forEach((item) => {
+        caminho.forEach((item, i) => {
             let box_matrix = document.createElement("div");
             box_matrix = createMatrixFromList(item.vetor);
             // console.log(box_matrix);
+            box_matrix.innerHTML = "Iteração "+ (i+1) + box_matrix.innerHTML;
             div_box.append(box_matrix);
-        })
+        });
     }
     else
         div_box.classList.add('display-none');
@@ -117,10 +122,10 @@ function createMatrixFromList(list)
     ret.classList.add("report-box-matrix");
 
     for (let i = 0; i < list.length; i++) {
-        ret.innerHTML += " " +list[i];
-        if((i+1) % 3 == 0) {
+        if(i % 3 == 0) {
             ret.innerHTML += "<br>";
         }
+        ret.innerHTML += " " +list[i];
     }
     return ret;
 }

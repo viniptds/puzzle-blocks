@@ -81,8 +81,9 @@ button:hover {
 .report-box-matrix {
     display: flex;
     justify-content: center;
-    align-self: center;
+    text-align: center;
     float: left;
-    margin: 10px 30px;
+    min-width: 26%;
+    margin: 30px 30px;
     font-size: 30px;
 }
